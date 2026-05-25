@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taller · Análisis Web y Usabilidad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F7F8FC;
+  --white:#FFFFFF;
+  --surface:#F0F2F9;
+  --border:#E2E6F0;
+  --border2:#CDD4E8;
+  --text:#1A1D2E;
+  --muted:#6B7490;
+  --hint:#9BA3BC;
+  --blue:#2563EB;
+  --blue-bg:#EEF3FD;
+  --blue-border:#BFCFF7;
+  --teal:#0D9488;
+  --teal-bg:#F0FDF9;
+  --teal-border:#99E6D8;
+  --amber:#D97706;
+  --amber-bg:#FFFBEB;
+  --amber-border:#FDE68A;
+  --red:#DC2626;
+  --red-bg:#FEF2F2;
+  --red-border:#FECACA;
+  --green:#16A34A;
+  --green-bg:#F0FDF4;
+  --green-border:#BBF7D0;
+  --purple:#7C3AED;
+  --purple-bg:#F5F3FF;
+  --purple-border:#DDD6FE;
+  --sans:'DM Sans',sans-serif;
+  --mono:'DM Mono',monospace;
+  --radius:12px;
+  --radius-sm:8px;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.04);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.6;min-height:100vh}
+
+/* ── NAV ── */
+.topnav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(247,248,252,.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:0 24px;
+}
+.nav-inner{
+  max-width:1060px;margin:0 auto;
+  display:flex;align-items:center;gap:0;
+  height:52px;
+}
+.nav-brand{
+  font-size:14px;font-weight:600;color:var(--text);
+  margin-right:32px;white-space:nowrap;
+  display:flex;align-items:center;gap:8px;
+}
+.nav-brand span{
+  font-size:11px;font-weight:500;color:var(--muted);
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:20px;padding:2px 8px;
+}
+.nav-links{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-link{
+  font-size:13px;font-weight:400;color:var(--muted);
+  padding:6px 12px;border-radius:var(--radius-sm);
+  cursor:pointer;white-space:nowrap;transition:all .15s;
+  text-decoration:none;border:none;background:transparent;
+}
+.nav-link:hover{color:var(--text);background:var(--surface)}
+.nav-link.active{color:var(--blue);background:var(--blue-bg);font-weight:500}
+
+/* ── HERO ── */
+.hero{
+  background:linear-gradient(135deg,#1E3A8A 0%,#1D4ED8 50%,#2563EB 100%);
+  padding:56px 24px 48px;color:#fff;
+}
+.hero-inner{max-width:1060px;margin:0 auto}
+.hero-tag{
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:rgba(255,255,255,.6);
+  margin-bottom:14px;display:flex;align-items:center;gap:8px;
+}
+.hero-tag::before{content:'';width:20px;height:1px;background:rgba(255,255,255,.4)}
+.hero h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:600;line-height:1.15;margin-bottom:12px;letter-spacing:-.02em}
+.hero-sub{font-size:15px;color:rgba(255,255,255,.75);max-width:560px;line-height:1.65}
+.hero-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}
+.chip{
+  font-size:12px;font-weight:500;
+  padding:4px 12px;border-radius:20px;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
+  color:rgba(255,255,255,.9);
+}
+
+/* ── LAYOUT ── */
+.page{max-width:1060px;margin:0 auto;padding:40px 24px 80px}
+.section{display:none}.section.active{display:block}
+.section-title{
+  font-size:22px;font-weight:600;color:var(--text);
+  margin-bottom:4px;letter-spacing:-.01em;
+}
+.section-sub{font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.6}
+
+/* ── CARDS ── */
+.card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--radius);padding:24px;
+  box-shadow:var(--shadow);
+}
+.card+.card{margin-top:16px}
+.card-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:4px}
+.card-sub{font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.5}
+
+/* ── GRID ── */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:680px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
+
+/* ── CALLOUT ── */
+.callout{border-radius:var(--radius-sm);padding:14px 18px;margin:16px 0;font-size:13px;line-height:1.6}
+.callout.blue{background:var(--blue-bg);border:1px solid var(--blue-border);color:#1E40AF}
+.callout.teal{background:var(--teal-bg);border:1px solid var(--teal-border);color:#0F766E}
+.callout.amber{background:var(--amber-bg);border:1px solid var(--amber-border);color:#92400E}
+.callout.red{background:var(--red-bg);border:1px solid var(--red-border);color:#991B1B}
+.callout strong{font-weight:600}
+
+/* ── CRONOGRAMA ── */
+.timeline{display:flex;flex-direction:column;gap:0}
+.tl-item{display:grid;grid-template-columns:60px 1fr;gap:0}
+.tl-left{display:flex;flex-direction:column;align-items:center;padding-top:4px}
+.tl-time{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap}
+.tl-dot{width:10px;height:10px;border-radius:50%;margin:5px 0;flex-shrink:0}
+.tl-line{flex:1;width:2px;background:var(--border);min-height:16px}
+.tl-item:last-child .tl-line{display:none}
+.tl-card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--radius);padding:16px 18px;
+  margin-bottom:12px;cursor:pointer;transition:border-color .15s;
+}
+.tl-card:hover{border-color:var(--border2)}
+.tl-card.open{border-color:var(--blue-border)}
+.tl-header{display:flex;align-items:center;gap:10px}
+.tl-icon{
+  width:32px;height:32px;border-radius:var(--radius-sm);
+  display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;
+}
+.tl-htitle{font-size:14px;font-weight:600;color:var(--text);flex:1}
+.tl-hmeta{font-size:12px;color:var(--muted);white-space:nowrap}
+.tl-chev{font-size:13px;color:var(--hint);transition:transform .2s}
+.tl-card.open .tl-chev{transform:rotate(180deg)}
+.tl-body{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.tl-card.open .tl-body{display:block}
+ul.bul{list-style:none;display:flex;flex-direction:column;gap:6px}
+ul.bul li{font-size:13px;color:var(--muted);padding-left:16px;position:relative;line-height:1.55}
+ul.bul li::before{content:"—";position:absolute;left:0;color:var(--hint)}
+
+/* ── HERRAMIENTAS ── */
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.tool-card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--radius);padding:18px;
+  box-shadow:var(--shadow);transition:box-shadow .2s,border-color .2s;
+}
+.tool-card:hover{box-shadow:var(--shadow-md);border-color:var(--border2)}
+.tool-icon{font-size:22px;margin-bottom:10px}
+.tool-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
+.tool-desc{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:10px}
+.tool-pills{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.pill{font-size:11px;padding:2px 8px;border-radius:20px;border:1px solid var(--border);color:var(--muted);background:var(--surface)}
+.pill.y{background:var(--green-bg);color:var(--green);border-color:var(--green-border)}
+.pill.m{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-border)}
+.tool-link{
+  font-size:12px;font-weight:500;color:var(--blue);
+  text-decoration:none;display:inline-flex;align-items:center;gap:4px;
+}
+.tool-link:hover{text-decoration:underline}
+
+/* ── SIMULADOR LIGHTHOUSE ── */
+.lh-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px}
+@media(max-width:600px){.lh-grid{grid-template-columns:repeat(2,1fr)}}
+.lh-input-card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--radius);padding:16px;text-align:center;
+  transition:border-color .2s;
+}
+.lh-input-card:focus-within{border-color:var(--blue-border)}
+.lh-cat{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px}
+.lh-num-wrap{position:relative;display:inline-block}
+.lh-input{
+  width:80px;height:56px;text-align:center;
+  font-size:28px;font-weight:600;font-family:var(--sans);
+  border:none;outline:none;background:transparent;
+  color:var(--text);
+}
+.lh-input::-webkit-inner-spin-button{-webkit-appearance:none}
+.lh-bar{height:4px;border-radius:2px;margin-top:8px;transition:background .3s,width .3s}
+
+.score-display-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px}
+.score-disp{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--radius);padding:16px;text-align:center;
+  position:relative;overflow:hidden;
+}
+.score-disp::after{content:'';position:absolute;bottom:0;left:0;right:0;height:4px}
+.score-disp.good::after{background:var(--green)}
+.score-disp.avg::after{background:var(--amber)}
+.score-disp.poor::after{background:var(--red)}
+.sd-num{font-size:38px;font-weight:600;line-height:1}
+.score-disp.good .sd-num{color:var(--green)}
+.score-disp.avg .sd-num{color:var(--amber)}
+.score-disp.poor .sd-num{color:var(--red)}
+.sd-label{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-top:4px}
+.sd-verdict{font-size:11px;font-weight:500;margin-top:6px}
+
+/* EMBUDO */
+.funnel-wrap{margin:20px 0}
+.funnel-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.funnel-lbl{font-size:13px;color:var(--text);min-width:150px}
+.funnel-bg{flex:1;height:10px;background:var(--surface);border-radius:5px;overflow:hidden}
+.funnel-fill{height:100%;border-radius:5px;transition:width .8s cubic-bezier(.4,0,.2,1)}
+.funnel-pct{font-family:var(--mono);font-size:12px;color:var(--muted);min-width:42px;text-align:right}
+.funnel-drop{font-family:var(--mono);font-size:11px;padding:2px 6px;border-radius:4px;white-space:nowrap}
+.fd-bad{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.fd-ok{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
+.fd-good{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+
+/* HALLAZGOS NIELSEN */
+.findings-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px}
+.finding-card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--radius);padding:16px;
+}
+.finding-h{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--blue);margin-bottom:6px}
+.finding-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px}
+.finding-desc{font-size:12px;color:var(--muted);line-height:1.5}
+.sev-badge{display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:4px;margin-top:8px;font-weight:500}
+.sev-3{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
+.sev-4{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.sev-2{background:var(--surface);color:var(--muted);border:1px solid var(--border)}
+.sev-ok{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+
+/* PREGUNTAS */
+.question-list{display:flex;flex-direction:column;gap:10px}
+.question-item{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--radius);padding:16px 18px;
+  display:flex;gap:14px;align-items:flex-start;
+}
+.q-num{
+  font-family:var(--mono);font-size:11px;font-weight:500;
+  background:var(--purple-bg);color:var(--purple);
+  border:1px solid var(--purple-border);border-radius:var(--radius-sm);
+  width:26px;height:26px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:1px;
+}
+.q-text{font-size:13px;color:var(--text);line-height:1.65}
+
+/* ANÁLISIS EMBUDO (simulador de métricas) */
+.metric-sliders{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.slider-row2{display:flex;align-items:center;gap:12px}
+.slider-row2 label{font-size:13px;color:var(--text);min-width:180px}
+.slider-row2 input[type=range]{flex:1;accent-color:var(--blue)}
+.slider-row2 .sv{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--text);min-width:52px;text-align:right}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+@media(max-width:600px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+.kpi{background:var(--surface);border-radius:var(--radius-sm);padding:14px}
+.kpi-label{font-size:12px;color:var(--muted)}
+.kpi-val{font-size:22px;font-weight:600;color:var(--text);margin-top:2px}
+.kpi-sub{font-size:11px;color:var(--hint);margin-top:1px}
+.insight{border-radius:var(--radius-sm);padding:12px 16px;font-size:13px;line-height:1.55;margin-top:12px}
+
+/* DEBATE */
+.debate-list{display:flex;flex-direction:column;gap:10px}
+.debate-item{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--radius);padding:16px 18px;display:flex;gap:12px;
+}
+.d-num{
+  font-size:13px;font-weight:600;color:var(--blue);
+  background:var(--blue-bg);border:1px solid var(--blue-border);
+  border-radius:var(--radius-sm);width:28px;height:28px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;
+}
+.d-text{font-size:13px;color:var(--text);line-height:1.65}
+
+/* STATUS BADGE */
+.status-row{display:flex;align-items:center;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.status-badge{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px}
+
+/* FOOTER */
+footer{
+  border-top:1px solid var(--border);padding:24px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:10px;
+}
+.footer-text{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.footer-badge{
+  font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;
+  padding:4px 10px;border-radius:20px;
+  background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border);
+}
+
+/* RESPONSIVE */
+@media(max-width:640px){
+  .hero{padding:36px 16px 32px}
+  .page{padding:24px 16px 60px}
+  .topnav{padding:0 16px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="topnav">
+  <div class="nav-inner">
+    <div class="nav-brand">WebAudit Taller <span>v1.0</span></div>
+    <div class="nav-links">
+      <button class="nav-link active" onclick="goTo('intro')">Inicio</button>
+      <button class="nav-link" onclick="goTo('cronograma')">Cronograma</button>
+      <button class="nav-link" onclick="goTo('herramientas')">Herramientas</button>
+      <button class="nav-link" onclick="goTo('simulador')">Simulador Lighthouse</button>
+      <button class="nav-link" onclick="goTo('embudo')">Embudo</button>
+      <button class="nav-link" onclick="goTo('debate')">Debate y cierre</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Diseño de Sitios Web · Licenciatura</div>
+    <h1>Taller de Análisis Web<br>y Evaluación de Usabilidad</h1>
+    <p class="hero-sub">Herramienta de clase para practicar análisis de rendimiento, evaluación heurística con Nielsen y análisis de embudos de conversión usando sitios web reales.</p>
+    <div class="hero-chips">
+      <span class="chip">⏱ 90 minutos</span>
+      <span class="chip">👥 Grupos de 3–4</span>
+      <span class="chip">🌐 Herramientas gratuitas</span>
+      <span class="chip">📊 Datos reales</span>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+
+<!-- ══ INTRO ══ -->
+<section class="section active" id="sec-intro">
+  <div class="section-title">Bienvenida al taller</div>
+  <p class="section-sub">Seleccioná una sección en el menú superior para navegar. Comenzá por el Cronograma para ver el flujo completo del taller, luego usá el Simulador Lighthouse para ingresar los resultados de tu auditoría.</p>
+
+  <div class="grid3" style="margin-bottom:24px">
+    <div class="card" style="border-top:3px solid var(--blue);cursor:pointer" onclick="goTo('cronograma')">
+      <div style="font-size:24px;margin-bottom:10px">📋</div>
+      <div class="card-title">Cronograma</div>
+      <div class="card-sub">Flujo de 90 minutos con las 4 fases del taller.</div>
+      <div style="font-size:12px;color:var(--blue);font-weight:500;margin-top:8px">Ver cronograma →</div>
+    </div>
+    <div class="card" style="border-top:3px solid var(--teal);cursor:pointer" onclick="goTo('herramientas')">
+      <div style="font-size:24px;margin-bottom:10px">🛠</div>
+      <div class="card-title">Herramientas</div>
+      <div class="card-sub">6 herramientas gratuitas para el análisis completo.</div>
+      <div style="font-size:12px;color:var(--teal);font-weight:500;margin-top:8px">Ver herramientas →</div>
+    </div>
+    <div class="card" style="border-top:3px solid var(--purple);cursor:pointer" onclick="goTo('simulador')">
+      <div style="font-size:24px;margin-bottom:10px">⚡</div>
+      <div class="card-title">Simulador Lighthouse</div>
+      <div class="card-sub">Ingresá tus puntajes y obtené análisis con Nielsen.</div>
+      <div style="font-size:12px;color:var(--purple);font-weight:500;margin-top:8px">Ir al simulador →</div>
+    </div>
+  </div>
+
+  <div class="callout blue">
+    <strong>¿Cómo usar esta herramienta?</strong><br>
+    1. Corré el análisis en <a href="https://pagespeed.web.dev" target="_blank" style="color:var(--blue)">pagespeed.web.dev</a> sobre el sitio asignado.<br>
+    2. Ingresá los 4 puntajes en la sección <strong>Simulador Lighthouse</strong>.<br>
+    3. El simulador genera automáticamente el análisis heurístico, el embudo y las preguntas de reflexión.<br>
+    4. Usá la sección <strong>Debate y cierre</strong> para la discusión final del grupo.
+  </div>
+
+  <div style="margin-top:24px">
+    <div class="card-title" style="margin-bottom:12px">Sitios del curso con acceso rápido</div>
+    <div class="grid3">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <a href="https://pagespeed.web.dev/analysis?url=https://mep.go.cr" target="_blank" class="tool-link" style="font-size:13px;padding:8px 12px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm)">🏫 mep.go.cr — MEP</a>
+        <a href="https://pagespeed.web.dev/analysis?url=https://tse.go.cr" target="_blank" class="tool-link" style="font-size:13px;padding:8px 12px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm)">🗳 tse.go.cr — TSE</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <a href="https://pagespeed.web.dev/analysis?url=https://ccss.sa.cr" target="_blank" class="tool-link" style="font-size:13px;padding:8px 12px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm)">🏥 ccss.sa.cr — CCSS</a>
+        <a href="https://pagespeed.web.dev/analysis?url=https://ucr.ac.cr" target="_blank" class="tool-link" style="font-size:13px;padding:8px 12px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm)">🎓 ucr.ac.cr — UCR</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <a href="https://pagespeed.web.dev/analysis?url=https://tec.ac.cr" target="_blank" class="tool-link" style="font-size:13px;padding:8px 12px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm)">🔬 tec.ac.cr — TEC</a>
+        <a href="https://pagespeed.web.dev/analysis?url=https://msj.go.cr" target="_blank" class="tool-link" style="font-size:13px;padding:8px 12px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm)">🏙 msj.go.cr — MSJ</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CRONOGRAMA ══ -->
+<section class="section" id="sec-cronograma">
+  <div class="section-title">Cronograma del taller</div>
+  <p class="section-sub">90 minutos organizados en 4 fases. Hacé clic en cada bloque para ver las instrucciones detalladas.</p>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-left">
+        <span class="tl-time">0–10</span>
+        <div class="tl-dot" style="background:var(--blue)"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="togTl(this)">
+        <div class="tl-header">
+          <div class="tl-icon" style="background:var(--blue-bg);color:var(--blue)">🚀</div>
+          <span class="tl-htitle">Apertura: ¿qué mide el análisis web?</span>
+          <span class="tl-hmeta">Docente · 10 min</span>
+          <span class="tl-chev">▾</span>
+        </div>
+        <div class="tl-body">
+          <ul class="bul">
+            <li>El docente presenta las 5 métricas clave: sesiones, tasa de rebote, duración, páginas/sesión y tasa de conversión.</li>
+            <li>Pregunta detonadora: "¿Qué diferencia hay entre un sitio con muchas visitas y uno que cumple sus objetivos?"</li>
+            <li>Se asigna el sitio a cada grupo y se explica cómo ingresar los puntajes en el Simulador Lighthouse.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-left">
+        <span class="tl-time">10–30</span>
+        <div class="tl-dot" style="background:var(--teal)"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="togTl(this)">
+        <div class="tl-header">
+          <div class="tl-icon" style="background:var(--teal-bg);color:var(--teal)">🛠</div>
+          <span class="tl-htitle">Act. 1 · Auditoría con PageSpeed Insights</span>
+          <span class="tl-hmeta">Grupos · 20 min</span>
+          <span class="tl-chev">▾</span>
+        </div>
+        <div class="tl-body">
+          <ul class="bul">
+            <li>Cada grupo va a <strong>pagespeed.web.dev</strong> e ingresa la URL del sitio asignado.</li>
+            <li>Corren el análisis en <strong>móvil</strong> primero, luego en <strong>escritorio</strong>. Anotan los 4 puntajes de cada análisis.</li>
+            <li>Identifican los 3 "Opportunities" más críticos del reporte y cómo afectan la experiencia del usuario.</li>
+            <li>Ingresan los puntajes en la sección <strong>Simulador Lighthouse</strong> de esta herramienta.</li>
+          </ul>
+          <div class="callout teal" style="margin-top:12px">
+            <strong>Alternativa sin internet:</strong> el docente puede ejecutar el análisis con anticipación y compartir capturas de pantalla de los puntajes para que los grupos los ingresen en el simulador.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-left">
+        <span class="tl-time">30–55</span>
+        <div class="tl-dot" style="background:var(--purple)"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="togTl(this)">
+        <div class="tl-header">
+          <div class="tl-icon" style="background:var(--purple-bg);color:var(--purple)">🔽</div>
+          <span class="tl-htitle">Act. 2 · Análisis del embudo de conversión</span>
+          <span class="tl-hmeta">Grupos · 25 min</span>
+          <span class="tl-chev">▾</span>
+        </div>
+        <div class="tl-body">
+          <ul class="bul">
+            <li>Ir a la sección <strong>Embudo</strong> y ajustar los controles según las métricas del sitio evaluado.</li>
+            <li>Identificar el paso con mayor caída de usuarios. ¿Qué está pasando ahí según el diseño del sitio?</li>
+            <li>Proponer una mejora de diseño para ese paso citando una heurística de Nielsen (H1–H10).</li>
+            <li>Calcular manualmente la tasa de abandono en el paso crítico: (usuarios que no pasan / usuarios que llegaron) × 100.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-left">
+        <span class="tl-time">55–70</span>
+        <div class="tl-dot" style="background:var(--amber)"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="togTl(this)">
+        <div class="tl-header">
+          <div class="tl-icon" style="background:var(--amber-bg);color:var(--amber)">📋</div>
+          <span class="tl-htitle">Act. 3 · Mini-reporte de hallazgos</span>
+          <span class="tl-hmeta">Grupos · 3 min c/u</span>
+          <span class="tl-chev">▾</span>
+        </div>
+        <div class="tl-body">
+          <ul class="bul">
+            <li>Cada grupo presenta: puntaje Lighthouse del sitio, hallazgo más crítico conectado con Nielsen y recomendación principal.</li>
+            <li>Clasificar el problema encontrado: ¿es de diseño, contenido, rendimiento técnico o comportamiento del usuario?</li>
+            <li>El docente registra los hallazgos en el pizarrón virtual para la comparación entre grupos.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-left">
+        <span class="tl-time">70–90</span>
+        <div class="tl-dot" style="background:var(--green)"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="togTl(this)">
+        <div class="tl-header">
+          <div class="tl-icon" style="background:var(--green-bg);color:var(--green)">💬</div>
+          <span class="tl-htitle">Debate y cierre integrador</span>
+          <span class="tl-hmeta">Grupo completo · 20 min</span>
+          <span class="tl-chev">▾</span>
+        </div>
+        <div class="tl-body">
+          <ul class="bul">
+            <li>El docente lanza las preguntas de la sección <strong>Debate y cierre</strong> al grupo completo.</li>
+            <li>Se conecta el análisis web con la evaluación heurística: ¿qué muestra Lighthouse que Nielsen no detecta?</li>
+            <li>Cierre: diferencia entre datos cuantitativos (analítica) y cualitativos (heurísticas).</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ HERRAMIENTAS ══ -->
+<section class="section" id="sec-herramientas">
+  <div class="section-title">Herramientas gratuitas del taller</div>
+  <p class="section-sub">Todas permiten analizar sitios web reales sin costo. Ninguna requiere crear cuenta para el análisis básico.</p>
+
+  <div class="tool-grid">
+    <div class="tool-card">
+      <div class="tool-icon">⚡</div>
+      <div class="tool-name">PageSpeed Insights</div>
+      <div class="tool-desc">Puntajes Lighthouse de rendimiento, accesibilidad, SEO y buenas prácticas. Resultado en 30 segundos.</div>
+      <div class="tool-pills">
+        <span class="pill y">Sin registro</span>
+        <span class="pill y">Móvil y escritorio</span>
+      </div>
+      <a href="https://pagespeed.web.dev" target="_blank" class="tool-link">pagespeed.web.dev ↗</a>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">♿</div>
+      <div class="tool-name">WAVE Accessibility</div>
+      <div class="tool-desc">Extensión Chrome que evalúa accesibilidad WCAG visualmente sobre la página. Identifica errores con íconos en la pantalla.</div>
+      <div class="tool-pills">
+        <span class="pill y">Extensión gratuita</span>
+        <span class="pill y">Visual e intuitivo</span>
+      </div>
+      <a href="https://wave.webaim.org" target="_blank" class="tool-link">wave.webaim.org ↗</a>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🔍</div>
+      <div class="tool-name">SEO Site Checkup</div>
+      <div class="tool-desc">Análisis SEO on-page completo: title tags, headings, meta descripción, velocidad y más.</div>
+      <div class="tool-pills">
+        <span class="pill y">Sin registro</span>
+        <span class="pill m">3 análisis/día gratis</span>
+      </div>
+      <a href="https://seositecheckup.com" target="_blank" class="tool-link">seositecheckup.com ↗</a>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">👁</div>
+      <div class="tool-name">Microsoft Clarity</div>
+      <div class="tool-desc">Heatmaps de clics y scroll, grabaciones de sesión. Gratis sin límite de tráfico.</div>
+      <div class="tool-pills">
+        <span class="pill m">Requiere cuenta</span>
+        <span class="pill m">Snippet JS requerido</span>
+      </div>
+      <a href="https://clarity.microsoft.com" target="_blank" class="tool-link">clarity.microsoft.com ↗</a>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">📊</div>
+      <div class="tool-name">Plausible (demo público)</div>
+      <div class="tool-desc">Dashboard de analytics abierto con datos reales del sitio de Plausible. Sin registro, solo para observar y analizar.</div>
+      <div class="tool-pills">
+        <span class="pill y">Sin registro</span>
+        <span class="pill y">Datos reales públicos</span>
+      </div>
+      <a href="https://plausible.io/plausible.io" target="_blank" class="tool-link">plausible.io/plausible.io ↗</a>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🌐</div>
+      <div class="tool-name">SimilarWeb (básico)</div>
+      <div class="tool-desc">Estimados de tráfico, fuentes de visitas y páginas más vistas de cualquier sitio público.</div>
+      <div class="tool-pills">
+        <span class="pill y">Sin registro</span>
+        <span class="pill m">Datos estimados</span>
+      </div>
+      <a href="https://similarweb.com" target="_blank" class="tool-link">similarweb.com ↗</a>
+    </div>
+  </div>
+
+  <div class="callout blue" style="margin-top:24px">
+    <strong>Flujo sugerido:</strong> PageSpeed Insights (rendimiento y puntajes) → WAVE (accesibilidad visual) → SEO Site Checkup (SEO on-page) → Ingresá los puntajes en el Simulador Lighthouse de esta herramienta para el análisis integrado con Nielsen.
+  </div>
+</section>
+
+<!-- ══ SIMULADOR LIGHTHOUSE ══ -->
+<section class="section" id="sec-simulador">
+  <div class="section-title">Simulador Lighthouse</div>
+  <p class="section-sub">Ingresá los 4 puntajes obtenidos en PageSpeed Insights para tu sitio. El simulador genera el análisis heurístico, el embudo estimado y las preguntas de reflexión.</p>
+
+  <div class="card">
+    <div class="card-title">Nombre del sitio evaluado</div>
+    <input type="text" id="site-name" placeholder="Ej: mep.go.cr — Ministerio de Educación Pública"
+      style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--sans);font-size:14px;color:var(--text);background:var(--white);margin-top:8px;outline:none"
+      oninput="updateSim()">
+    <div style="display:flex;gap:12px;margin-top:12px">
+      <label style="font-size:13px;color:var(--text);display:flex;align-items:center;gap:6px;cursor:pointer">
+        <input type="radio" name="device" value="mobile" checked onchange="updateSim()"> 📱 Análisis móvil
+      </label>
+      <label style="font-size:13px;color:var(--text);display:flex;align-items:center;gap:6px;cursor:pointer">
+        <input type="radio" name="device" value="desktop" onchange="updateSim()"> 🖥 Análisis escritorio
+      </label>
+    </div>
+  </div>
+
+  <div style="margin-top:20px">
+    <div class="card-title" style="margin-bottom:4px">Ingresá los 4 puntajes (0 – 100)</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Copiá los números exactos del reporte de PageSpeed Insights. Podés escribirlos o usar las flechas del teclado.</p>
+    <div class="lh-grid">
+      <div class="lh-input-card">
+        <div class="lh-cat">Rendimiento</div>
+        <input class="lh-input" type="number" id="sc-perf" min="0" max="100" value="45" oninput="updateSim()">
+        <div class="lh-bar" id="bar-perf"></div>
+      </div>
+      <div class="lh-input-card">
+        <div class="lh-cat">Accesibilidad</div>
+        <input class="lh-input" type="number" id="sc-acc" min="0" max="100" value="72" oninput="updateSim()">
+        <div class="lh-bar" id="bar-acc"></div>
+      </div>
+      <div class="lh-input-card">
+        <div class="lh-cat">Buenas prácticas</div>
+        <input class="lh-input" type="number" id="sc-bp" min="0" max="100" value="67" oninput="updateSim()">
+        <div class="lh-bar" id="bar-bp"></div>
+      </div>
+      <div class="lh-input-card">
+        <div class="lh-cat">SEO</div>
+        <input class="lh-input" type="number" id="sc-seo" min="0" max="100" value="81" oninput="updateSim()">
+        <div class="lh-bar" id="bar-seo"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTADOS GENERADOS -->
+  <div id="sim-results">
+    <div class="score-display-grid" id="score-display"></div>
+
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px">
+      <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px">Embudo de conversión estimado</div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:16px">Estimación basada en el puntaje de rendimiento. Muestra dónde el sitio pierde usuarios probablemente.</p>
+      <div id="lh-funnel"></div>
+    </div>
+
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px">
+      <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px">Hallazgos con criterios de Nielsen</div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:16px">Generados a partir de los puntajes ingresados. Complementalos con observación directa del sitio.</p>
+      <div class="findings-grid" id="lh-findings"></div>
+    </div>
+
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px">
+      <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px">Preguntas de reflexión para el grupo</div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:16px">Basadas en los puntajes específicos de este análisis.</p>
+      <div class="question-list" id="lh-questions"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ EMBUDO ══ -->
+<section class="section" id="sec-embudo">
+  <div class="section-title">Simulador de embudo de conversión</div>
+  <p class="section-sub">Ajustá los controles según las métricas del sitio que estás evaluando. Identificá dónde se pierde más tráfico y propone una mejora basada en Nielsen.</p>
+
+  <div class="card">
+    <div class="metric-sliders">
+      <div class="slider-row2">
+        <label>Visitas al mes</label>
+        <input type="range" min="500" max="80000" value="15000" step="500" id="m-visits" oninput="updateEmbudo()">
+        <span class="sv" id="sv-visits">15,000</span>
+      </div>
+      <div class="slider-row2">
+        <label>Tasa de rebote (%)</label>
+        <input type="range" min="15" max="88" value="55" step="1" id="m-bounce" oninput="updateEmbudo()">
+        <span class="sv" id="sv-bounce">55%</span>
+      </div>
+      <div class="slider-row2">
+        <label>Duración promedio (min)</label>
+        <input type="range" min="0.5" max="9" value="2.2" step="0.1" id="m-dur" oninput="updateEmbudo()">
+        <span class="sv" id="sv-dur">2.2 min</span>
+      </div>
+      <div class="slider-row2">
+        <label>Tasa de conversión (%)</label>
+        <input type="range" min="0.2" max="15" value="2.8" step="0.1" id="m-conv" oninput="updateEmbudo()">
+        <span class="sv" id="sv-conv">2.8%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="kpi-grid" style="margin-top:16px">
+    <div class="kpi"><div class="kpi-label">Visitas reales</div><div class="kpi-val" id="kpi-real">6,750</div><div class="kpi-sub">sin rebote</div></div>
+    <div class="kpi"><div class="kpi-label">Conversiones</div><div class="kpi-val" id="kpi-conv">420</div><div class="kpi-sub">este mes</div></div>
+    <div class="kpi"><div class="kpi-label">Páginas/sesión</div><div class="kpi-val" id="kpi-pages">3.0</div><div class="kpi-sub">estimado</div></div>
+    <div class="kpi"><div class="kpi-label">Oportunidad perdida</div><div class="kpi-val" id="kpi-lost">14,580</div><div class="kpi-sub">visitas sin conversión</div></div>
+  </div>
+
+  <div class="card" style="margin-top:0">
+    <div class="card-title">Embudo de conversión</div>
+    <div class="funnel-wrap" id="embudo-funnel"></div>
+    <div class="insight" id="embudo-insight"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Ejercicio para el grupo</div>
+    <div class="callout amber" style="margin:0">
+      <strong>Identifica el paso crítico:</strong> ¿En qué etapa del embudo hay mayor caída de usuarios? Propone una mejora de diseño específica para ese paso usando la estructura de hipótesis A/B: <em>"Si cambiamos [X] por [Y], esperamos que [Z] mejore porque [principio de Nielsen o comportamiento del usuario]."</em>
+    </div>
+  </div>
+</section>
+
+<!-- ══ DEBATE ══ -->
+<section class="section" id="sec-debate">
+  <div class="section-title">Debate y cierre integrador</div>
+  <p class="section-sub">Preguntas detonadoras para los últimos 20 minutos del taller. El docente lanza las preguntas al grupo completo y facilita la discusión.</p>
+
+  <div class="debate-list">
+    <div class="debate-item">
+      <div class="d-num">1</div>
+      <div class="d-text">Un sitio tiene 80,000 visitas al mes pero una tasa de conversión del 0.5%. Otro tiene 8,000 visitas y una tasa del 6%. ¿Cuál está funcionando mejor? ¿Qué métricas usarían para justificar su respuesta?</div>
+    </div>
+    <div class="debate-item">
+      <div class="d-num">2</div>
+      <div class="d-text">Lighthouse les dice que el 70% de los usuarios abandona el formulario de registro. La evaluación heurística dice que tiene 8 campos obligatorios sin validación en tiempo real. ¿Cuál de los dos métodos da más información útil para tomar una decisión de diseño? ¿O necesitan los dos?</div>
+    </div>
+    <div class="debate-item">
+      <div class="d-num">3</div>
+      <div class="d-text">El sitio que analizaron obtuvo un puntaje de rendimiento bajo en móvil. ¿Eso es un problema de diseño, de desarrollo, de contenido, o de los tres? ¿A quién le correspondería resolverlo en un equipo de trabajo real?</div>
+    </div>
+    <div class="debate-item">
+      <div class="d-num">4</div>
+      <div class="d-text">¿Qué hallazgos encontraron con Lighthouse que NO habrían detectado con la lista de chequeo de Nielsen? ¿Y cuáles habrían encontrado con Nielsen que Lighthouse no puede detectar? ¿Por qué necesitamos los dos métodos?</div>
+    </div>
+    <div class="debate-item">
+      <div class="d-num">5</div>
+      <div class="d-text">Si tuvieran que elegir solo UNA métrica para evaluar si el sitio analizado cumple su objetivo, ¿cuál sería y por qué? ¿Cambia esa respuesta según el tipo de sitio: institucional, tienda, portal de servicios, universidad?</div>
+    </div>
+    <div class="debate-item">
+      <div class="d-num">6</div>
+      <div class="d-text">Basándose en los hallazgos del taller, propongan un experimento A/B para el sitio que evaluaron. ¿Qué elemento cambiarían, cómo medirían el éxito y qué herramienta usarían: GrowthBook o Plerdy?</div>
+    </div>
+  </div>
+
+  <div class="callout teal" style="margin-top:20px">
+    <strong>Dinámica sugerida:</strong> usar Mentimeter o la función de encuesta de Zoom para que los estudiantes voten cuál hallazgo consideran más crítico antes de abrir el debate. La discrepancia entre grupos sobre la misma pregunta es el material más rico para el cierre.
+  </div>
+
+  <div class="card" style="margin-top:24px">
+    <div class="card-title">Conexión con el proyecto de cierre</div>
+    <p class="card-sub">Lo que practican en este taller es exactamente lo que deberán aplicar en el proyecto de cierre (15% de la nota): evaluación heurística + analítica web + propuesta A/B sobre un sitio real asignado de forma cruzada.</p>
+    <div class="grid3" style="margin-top:0">
+      <div style="background:var(--blue-bg);border-radius:var(--radius-sm);padding:12px;border:1px solid var(--blue-border)">
+        <div style="font-size:12px;font-weight:600;color:var(--blue);margin-bottom:4px">Fase 2 del proyecto</div>
+        <div style="font-size:12px;color:var(--muted)">Lista de chequeo Nielsen aplicada al prototipo del grupo asignado.</div>
+      </div>
+      <div style="background:var(--teal-bg);border-radius:var(--radius-sm);padding:12px;border:1px solid var(--teal-border)">
+        <div style="font-size:12px;font-weight:600;color:var(--teal);margin-bottom:4px">Fase 3 del proyecto</div>
+        <div style="font-size:12px;color:var(--muted)">Lighthouse + WAVE + SEO + Clarity sobre el prototipo recibido.</div>
+      </div>
+      <div style="background:var(--purple-bg);border-radius:var(--radius-sm);padding:12px;border:1px solid var(--purple-border)">
+        <div style="font-size:12px;font-weight:600;color:var(--purple);margin-bottom:4px">Fase 3 del proyecto</div>
+        <div style="font-size:12px;color:var(--muted)">Propuesta de experimento A/B basada en los hallazgos previos.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /page -->
+
+<footer>
+  <div class="footer-text">WebAudit Taller · Datos de PageSpeed Insights · Uso académico · Diseño de Sitios Web</div>
+  <div class="footer-badge">Licenciatura</div>
+</footer>
+
+<script>
+// ── NAVEGACIÓN ─────────────────────────────────────
+const SECTIONS = ['intro','cronograma','herramientas','simulador','embudo','debate'];
+
+function goTo(id) {
+  SECTIONS.forEach(s => {
+    document.getElementById('sec-' + s).classList.toggle('active', s === id);
+  });
+  document.querySelectorAll('.nav-link').forEach((el, i) => {
+    el.classList.toggle('active', SECTIONS[i] === id);
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── TOGGLE TIMELINE ─────────────────────────────────
+function togTl(el) { el.classList.toggle('open'); }
+
+// ── UTILIDADES ──────────────────────────────────────
+function sc(v) {
+  const n = Math.max(0, Math.min(100, parseInt(v) || 0));
+  if (n >= 90) return 'good';
+  if (n >= 50) return 'avg';
+  return 'poor';
+}
+function scLabel(v) {
+  if (v >= 90) return { txt: 'Bueno', cls: 'good' };
+  if (v >= 50) return { txt: 'Mejorable', cls: 'avg' };
+  return { txt: 'Crítico', cls: 'poor' };
+}
+function barColor(v) {
+  if (v >= 90) return 'var(--green)';
+  if (v >= 50) return 'var(--amber)';
+  return 'var(--red)';
+}
+
+// ── SIMULADOR LIGHTHOUSE ─────────────────────────────
+function updateSim() {
+  const perf = Math.max(0, Math.min(100, parseInt(document.getElementById('sc-perf').value) || 0));
+  const acc  = Math.max(0, Math.min(100, parseInt(document.getElementById('sc-acc').value) || 0));
+  const bp   = Math.max(0, Math.min(100, parseInt(document.getElementById('sc-bp').value) || 0));
+  const seo  = Math.max(0, Math.min(100, parseInt(document.getElementById('sc-seo').value) || 0));
+  const device = document.querySelector('input[name="device"]:checked')?.value || 'mobile';
+  const siteName = document.getElementById('site-name').value || 'el sitio evaluado';
+
+  // Barras bajo los inputs
+  [['perf',perf],['acc',acc],['bp',bp],['seo',seo]].forEach(([k,v]) => {
+    const bar = document.getElementById('bar-' + k);
+    bar.style.background = barColor(v);
+    bar.style.width = v + '%';
+  });
+
+  // Score display
+  const cats = [
+    ['Rendimiento', perf], ['Accesibilidad', acc],
+    ['Buenas prácticas', bp], ['SEO', seo]
+  ];
+  document.getElementById('score-display').innerHTML = cats.map(([name, val]) => {
+    const { txt, cls } = scLabel(val);
+    return `<div class="score-disp ${cls}">
+      <div class="sd-num">${val}</div>
+      <div class="sd-label">${name}</div>
+      <div class="sd-verdict" style="color:${cls==='good'?'var(--green)':cls==='avg'?'var(--amber)':'var(--red)'}">${txt}</div>
+    </div>`;
+  }).join('');
+
+  // Embudo estimado
+  document.getElementById('lh-funnel').innerHTML = buildFunnel(perf);
+
+  // Hallazgos Nielsen
+  document.getElementById('lh-findings').innerHTML = buildFindings(perf, acc, bp, seo, device);
+
+  // Preguntas
+  document.getElementById('lh-questions').innerHTML = buildQuestions(perf, acc, bp, seo, siteName, device);
+}
+
+function buildFunnel(perf) {
+  const p = perf;
+  const s = [100,
+    Math.round(100*(p>80?.88:p>50?.74:.56)),
+    0, 0, 0
+  ];
+  s[2] = Math.round(s[1]*(p>80?.71:p>50?.60:.46));
+  s[3] = Math.round(s[2]*(p>80?.64:p>50?.51:.39));
+  s[4] = Math.round(s[3]*(p>80?.54:p>50?.41:.29));
+
+  const labels = ['Visita la página','Explora contenido','Interacción clave','Formulario / acción','Conversión final'];
+  const colors = ['#2563EB','#7C3AED','#0D9488','#D97706','#DC2626'];
+
+  return labels.map((lbl, i) => {
+    const prev = i === 0 ? 100 : s[i-1];
+    const dropPct = i === 0 ? 0 : Math.round(((prev - s[i]) / prev) * 100);
+    let cls = 'fd-good';
+    if (dropPct > 40) cls = 'fd-bad';
+    else if (dropPct > 20) cls = 'fd-ok';
+    return `<div class="funnel-row">
+      <div class="funnel-lbl">${lbl}</div>
+      <div class="funnel-bg"><div class="funnel-fill" style="width:${s[i]}%;background:${colors[i]}"></div></div>
+      <div class="funnel-pct">${s[i]}%</div>
+      ${i > 0 ? `<div class="funnel-drop ${cls}">-${dropPct}%</div>` : '<div style="min-width:48px"></div>'}
+    </div>`;
+  }).join('');
+}
+
+function buildFindings(perf, acc, bp, seo, device) {
+  const findings = [];
+
+  if (perf < 90) findings.push({
+    h: 'H1 — Visibilidad del estado del sistema',
+    title: device === 'mobile' ? 'Carga lenta en móvil perjudica la retroalimentación' : 'Tiempo de carga afecta la percepción del sistema',
+    desc: `Rendimiento de ${perf}/100. El usuario no recibe confirmación rápida de que el sitio está cargando. Un LCP elevado genera sensación de "sitio roto".`,
+    sev: perf < 50 ? 4 : perf < 75 ? 3 : 2
+  });
+
+  if (acc < 90) findings.push({
+    h: 'H6 — Reconocimiento vs. recuerdo',
+    title: 'Problemas de accesibilidad detectados',
+    desc: `Accesibilidad de ${acc}/100. Usuarios con discapacidades o adultos mayores pueden tener dificultad para reconocer y usar los elementos de interfaz.`,
+    sev: acc < 60 ? 4 : acc < 75 ? 3 : 2
+  });
+
+  if (seo < 80) findings.push({
+    h: 'H2 — Coincidencia con el mundo real',
+    title: 'SEO deficiente afecta la encontrabilidad',
+    desc: `SEO de ${seo}/100. Títulos o metadescripciones incorrectas dificultan que el usuario encuentre el sitio con lenguaje natural en motores de búsqueda.`,
+    sev: seo < 60 ? 3 : 2
+  });
+
+  if (bp < 80) findings.push({
+    h: 'H5 — Prevención de errores',
+    title: 'Prácticas de desarrollo con problemas',
+    desc: `Buenas prácticas de ${bp}/100. Uso de APIs obsoletas, recursos inseguros o errores de consola pueden generar comportamientos inesperados que confunden al usuario.`,
+    sev: bp < 60 ? 3 : 2
+  });
+
+  if (perf < 60) findings.push({
+    h: 'H8 — Diseño estético y minimalista',
+    title: 'Rendimiento bajo sugiere recursos excesivos',
+    desc: `Performance de ${perf}/100 indica posibles imágenes sin optimizar, scripts bloqueantes o CSS excesivo que añade peso visual sin valor al usuario.`,
+    sev: 3
+  });
+
+  if (perf < 80 && acc < 80) findings.push({
+    h: 'H7 — Flexibilidad y eficiencia de uso',
+    title: 'Experiencia degradada para usuarios frecuentes',
+    desc: `La combinación de bajo rendimiento (${perf}) y accesibilidad (${acc}) perjudica especialmente a usuarios que visitan el sitio regularmente desde dispositivos de gama media.`,
+    sev: 2
+  });
+
+  if (findings.length === 0) {
+    return `<div class="callout teal">Puntajes saludables. No se generaron hallazgos automáticos críticos. Complementá con evaluación heurística manual para detectar problemas de contenido y flujo.</div>`;
+  }
+
+  const sevColor = { 4: 'sev-4', 3: 'sev-3', 2: 'sev-2', 1: 'sev-ok' };
+  const sevLabel = { 4: 'Severo (4/4)', 3: 'Mayor (3/4)', 2: 'Menor (2/4)', 1: 'Cosmético (1/4)' };
+
+  return findings.slice(0, 6).map(f => `
+    <div class="finding-card">
+      <div class="finding-h">${f.h}</div>
+      <div class="finding-title">${f.title}</div>
+      <div class="finding-desc">${f.desc}</div>
+      <span class="sev-badge ${sevColor[f.sev]}">${sevLabel[f.sev]}</span>
+    </div>`).join('');
+}
+
+function buildQuestions(perf, acc, bp, seo, site, device) {
+  const dev = device === 'mobile' ? 'móvil' : 'escritorio';
+  const qs = [
+    `<strong>${site}</strong> obtuvo rendimiento de <strong>${perf}/100</strong> en ${dev}. ¿Qué impacto concreto tiene este resultado en un usuario real que visita el sitio desde un teléfono de gama media con señal 4G?`,
+    `El puntaje de accesibilidad es <strong>${acc}/100</strong>. Identificá dos heurísticas de Nielsen que se relacionan directamente con los problemas de accesibilidad. ¿Por qué la accesibilidad y la usabilidad no son lo mismo pero se afectan mutuamente?`,
+    `Con un SEO de <strong>${seo}/100</strong>, ¿cómo afecta esto a la capacidad del usuario de encontrar el sitio con lenguaje cotidiano? Relacioná este hallazgo con la heurística H2 (Coincidencia con el mundo real).`,
+    `Basándose en los puntajes de este análisis, redactá la hipótesis de un experimento A/B: <em>"Si cambiamos [X] por [Y], esperamos que [métrica Z] mejore porque [principio de diseño o comportamiento del usuario]."</em>`,
+    `Los puntajes de buenas prácticas (<strong>${bp}/100</strong>) y rendimiento (<strong>${perf}/100</strong>) a veces bajan por decisiones de diseño (imágenes grandes, scripts de terceros, fuentes web). ¿Cómo cambiarías el flujo de trabajo de diseño para prevenir estos problemas desde el inicio del proyecto?`
+  ];
+  return qs.map((q, i) => `
+    <div class="question-item">
+      <div class="q-num">${i + 1}</div>
+      <div class="q-text">${q}</div>
+    </div>`).join('');
+}
+
+// ── EMBUDO INTERACTIVO ──────────────────────────────
+function updateEmbudo() {
+  const visits = parseInt(document.getElementById('m-visits').value);
+  const bounce = parseFloat(document.getElementById('m-bounce').value);
+  const dur    = parseFloat(document.getElementById('m-dur').value);
+  const conv   = parseFloat(document.getElementById('m-conv').value);
+
+  document.getElementById('sv-visits').textContent = visits.toLocaleString('es-CR');
+  document.getElementById('sv-bounce').textContent = Math.round(bounce) + '%';
+  document.getElementById('sv-dur').textContent = dur.toFixed(1) + ' min';
+  document.getElementById('sv-conv').textContent = conv.toFixed(1) + '%';
+
+  const real = Math.round(visits * (1 - bounce / 100));
+  const conversions = Math.round(visits * conv / 100);
+  const pages = Math.round((dur / 1.5 + 1) * 10) / 10;
+  const lost = visits - conversions;
+
+  document.getElementById('kpi-real').textContent = real.toLocaleString('es-CR');
+  document.getElementById('kpi-conv').textContent = conversions.toLocaleString('es-CR');
+  document.getElementById('kpi-pages').textContent = pages.toFixed(1);
+  document.getElementById('kpi-lost').textContent = lost.toLocaleString('es-CR');
+
+  const steps = [
+    { lbl: 'Visita la página', pct: 100 },
+    { lbl: 'Explora contenido', pct: Math.round(100 * (1 - bounce / 200)) },
+    { lbl: 'Interacción clave', pct: 0 },
+    { lbl: 'Formulario / acción', pct: 0 },
+    { lbl: 'Conversión final', pct: Math.round(conv * 3.2) },
+  ];
+  steps[2].pct = Math.round(steps[1].pct * .70);
+  steps[3].pct = Math.round(steps[2].pct * .55);
+
+  const colors = ['#2563EB','#7C3AED','#0D9488','#D97706','#DC2626'];
+  document.getElementById('embudo-funnel').innerHTML = steps.map((s, i) => {
+    const prev = i === 0 ? 100 : steps[i-1].pct;
+    const drop = i === 0 ? 0 : Math.round(((prev - s.pct) / prev) * 100);
+    let cls = 'fd-good';
+    if (drop > 40) cls = 'fd-bad';
+    else if (drop > 20) cls = 'fd-ok';
+    return `<div class="funnel-row">
+      <div class="funnel-lbl">${s.lbl}</div>
+      <div class="funnel-bg"><div class="funnel-fill" style="width:${s.pct}%;background:${colors[i]}"></div></div>
+      <div class="funnel-pct">${s.pct}%</div>
+      ${i > 0 ? `<div class="funnel-drop ${cls}">-${drop}%</div>` : '<div style="min-width:48px"></div>'}
+    </div>`;
+  }).join('');
+
+  const el = document.getElementById('embudo-insight');
+  if (bounce > 65) {
+    el.className = 'insight callout red';
+    el.innerHTML = `<strong>Tasa de rebote crítica (${Math.round(bounce)}%):</strong> la mayoría de usuarios se van sin explorar el sitio. Problema probable: velocidad de carga lenta, mensaje poco claro en el hero o expectativa no cumplida al llegar (H1, H8).`;
+  } else if (conv < 1.5) {
+    el.className = 'insight callout amber';
+    el.innerHTML = `<strong>Tasa de conversión muy baja (${conv.toFixed(1)}%):</strong> el sitio atrae usuarios pero no logra el objetivo. Revisá el paso de formulario/acción con criterios H3, H5 y H9. ¿Qué está impidiendo que el usuario complete la tarea?`;
+  } else if (bounce < 35 && conv > 5) {
+    el.className = 'insight callout teal';
+    el.innerHTML = `<strong>Métricas saludables:</strong> rebote controlado y conversión razonable. Enfoque: optimizar el paso intermedio del embudo para incrementar la conversión sin aumentar el presupuesto de tráfico.`;
+  } else {
+    el.className = 'insight callout blue';
+    el.innerHTML = `<strong>Métricas mixtas:</strong> hay oportunidad de mejora en el embudo medio. Investigá con heatmaps (Microsoft Clarity) qué hace el usuario antes de abandonar el paso de interacción clave.`;
+  }
+}
+
+// ── INIT ────────────────────────────────────────────
+updateSim();
+updateEmbudo();
+</script>
+</body>
+</html>
