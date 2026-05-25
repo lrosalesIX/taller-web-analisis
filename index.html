@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador de Embudo Web</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F8F9FC;
+  --white: #FFFFFF;
+  --surface: #EFF1F8;
+  --border: #E3E7F0;
+  --border2: #CDD5E8;
+  --text: #16192C;
+  --sub: #4A5278;
+  --muted: #7B84A3;
+  --hint: #A8B0CC;
+  --blue: #2A5BD7;
+  --blue-l: #EBF0FD;
+  --blue-b: #C2D0F8;
+  --teal: #0E8A73;
+  --teal-l: #EDFAF6;
+  --teal-b: #96E4D4;
+  --amber: #C47A0A;
+  --amber-l: #FEF8EC;
+  --amber-b: #FAD98A;
+  --red: #C8312A;
+  --red-l: #FEF1F0;
+  --red-b: #F9BCBA;
+  --green: #1A8042;
+  --green-l: #EDFBF3;
+  --green-b: #96E4B8;
+  --purple: #6B3AC8;
+  --purple-l: #F3EFFE;
+  --purple-b: #CDBCF5;
+  --sans: 'Inter', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --r: 10px;
+  --r-sm: 6px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* ── HEADER ── */
+.header {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 0 28px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.brand-icon {
+  width: 32px; height: 32px;
+  background: var(--blue);
+  border-radius: var(--r-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+}
+.brand-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+.brand-tag {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: var(--mono);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2px 8px;
+}
+.header-badge {
+  font-size: 11px;
+  font-family: var(--mono);
+  color: var(--blue);
+  background: var(--blue-l);
+  border: 1px solid var(--blue-b);
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-weight: 500;
+}
+
+/* ── MAIN ── */
+.main {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+@media (max-width: 820px) {
+  .main { grid-template-columns: 1fr; padding: 20px 16px 60px; }
+}
+
+/* ── PANEL IZQUIERDO ── */
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 20px;
+}
+.card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 2px;
+  letter-spacing: -.01em;
+}
+.card-sub {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+/* SITE NAME */
+.site-input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--border2);
+  border-radius: var(--r-sm);
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--text);
+  background: var(--white);
+  outline: none;
+  transition: border-color .15s;
+}
+.site-input:focus { border-color: var(--blue); }
+.site-input::placeholder { color: var(--hint); }
+
+/* QUICK SITES */
+.quick-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 10px;
+}
+.quick-chip {
+  font-size: 11px;
+  font-family: var(--mono);
+  padding: 3px 9px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--sub);
+  cursor: pointer;
+  transition: all .15s;
+}
+.quick-chip:hover {
+  background: var(--blue-l);
+  border-color: var(--blue-b);
+  color: var(--blue);
+}
+
+/* SLIDERS */
+.slider-group { display: flex; flex-direction: column; gap: 14px; }
+.slider-item { display: flex; flex-direction: column; gap: 5px; }
+.slider-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.slider-label { font-size: 12px; font-weight: 500; color: var(--sub); }
+.slider-value {
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--mono);
+  color: var(--text);
+  min-width: 52px;
+  text-align: right;
+}
+input[type=range] {
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--border2);
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--blue);
+  border: 2px solid var(--white);
+  box-shadow: 0 0 0 1px var(--blue);
+  cursor: pointer;
+}
+input[type=range]::-moz-range-thumb {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--blue);
+  border: 2px solid var(--white);
+  cursor: pointer;
+}
+.slider-ticks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--hint);
+  font-family: var(--mono);
+  margin-top: 1px;
+}
+
+/* SCENARIO PRESETS */
+.preset-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.preset-btn {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  cursor: pointer;
+  text-align: left;
+  transition: all .15s;
+}
+.preset-btn:hover { border-color: var(--blue-b); background: var(--blue-l); }
+.preset-btn.active { border-color: var(--blue); background: var(--blue-l); }
+.preset-name { font-size: 12px; font-weight: 500; color: var(--text); }
+.preset-desc { font-size: 10px; color: var(--muted); margin-top: 1px; }
+
+/* ── PANEL DERECHO ── */
+.results { display: flex; flex-direction: column; gap: 16px; }
+
+/* KPIs */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+@media (max-width: 580px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+.kpi {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.kpi::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+.kpi.blue::before { background: var(--blue); }
+.kpi.teal::before { background: var(--teal); }
+.kpi.amber::before { background: var(--amber); }
+.kpi.red::before { background: var(--red); }
+.kpi-label { font-size: 11px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: .04em; }
+.kpi-val { font-size: 26px; font-weight: 600; color: var(--text); margin: 4px 0 2px; letter-spacing: -.02em; line-height: 1; }
+.kpi-sub { font-size: 11px; color: var(--hint); }
+
+/* FUNNEL */
+.funnel-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 20px;
+}
+.funnel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.funnel-title { font-size: 14px; font-weight: 600; color: var(--text); }
+.funnel-device {
+  display: flex;
+  gap: 4px;
+}
+.dev-chip {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  cursor: pointer;
+  background: var(--surface);
+  transition: all .15s;
+}
+.dev-chip.active {
+  background: var(--blue-l);
+  border-color: var(--blue-b);
+  color: var(--blue);
+  font-weight: 500;
+}
+
+.funnel-steps { display: flex; flex-direction: column; gap: 4px; }
+.funnel-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  background: var(--white);
+  transition: background .2s;
+  position: relative;
+}
+.funnel-step.worst { border-color: var(--red-b); background: var(--red-l); }
+.step-icon {
+  width: 28px; height: 28px;
+  border-radius: var(--r-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+.step-info { flex: 1; min-width: 0; }
+.step-name { font-size: 12px; font-weight: 500; color: var(--text); }
+.step-desc { font-size: 11px; color: var(--muted); }
+.step-bar-wrap {
+  flex: 2;
+  height: 8px;
+  background: var(--surface);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.step-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width .7s cubic-bezier(.4,0,.2,1);
+}
+.step-pct {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+  min-width: 38px;
+  text-align: right;
+}
+.step-users {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  min-width: 56px;
+  text-align: right;
+}
+.drop-badge {
+  font-size: 10px;
+  font-weight: 600;
+  font-family: var(--mono);
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  min-width: 44px;
+  text-align: center;
+}
+.drop-bad { background: var(--red-l); color: var(--red); border: 1px solid var(--red-b); }
+.drop-ok  { background: var(--amber-l); color: var(--amber); border: 1px solid var(--amber-b); }
+.drop-good{ background: var(--green-l); color: var(--green); border: 1px solid var(--green-b); }
+.drop-none{ background: var(--surface); color: var(--hint); border: 1px solid var(--border); }
+
+/* CONNECTOR */
+.connector {
+  display: flex;
+  align-items: center;
+  padding: 0 22px;
+  height: 12px;
+  gap: 8px;
+}
+.conn-line { flex: 1; height: 1px; background: var(--border); }
+.conn-arrow { font-size: 10px; color: var(--hint); }
+
+/* INSIGHT */
+.insight {
+  border-radius: var(--r-sm);
+  padding: 12px 14px;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-top: 14px;
+  border: 1px solid;
+}
+.insight strong { font-weight: 600; }
+.insight.red { background: var(--red-l); border-color: var(--red-b); color: #8B1A14; }
+.insight.amber { background: var(--amber-l); border-color: var(--amber-b); color: #7A4800; }
+.insight.green { background: var(--green-l); border-color: var(--green-b); color: #0E5429; }
+.insight.blue { background: var(--blue-l); border-color: var(--blue-b); color: #1A3D9A; }
+
+/* HEURÍSTICAS */
+.heuristic-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 20px;
+}
+.heuristic-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 14px; }
+.heuristic-list { display: flex; flex-direction: column; gap: 8px; }
+.heuristic-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+}
+.h-tag {
+  font-size: 10px;
+  font-family: var(--mono);
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+.h-body { flex: 1; }
+.h-name { font-size: 12px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+.h-desc { font-size: 11px; color: var(--muted); line-height: 1.5; }
+.sev-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+/* PREGUNTAS */
+.questions-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 20px;
+}
+.questions-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 14px; }
+.question-list { display: flex; flex-direction: column; gap: 8px; }
+.q-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+}
+.q-num {
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--mono);
+  color: var(--purple);
+  background: var(--purple-l);
+  border: 1px solid var(--purple-b);
+  border-radius: var(--r-sm);
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.q-text { font-size: 12px; color: var(--sub); line-height: 1.65; }
+
+/* FOOTER */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 16px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.footer-left { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.footer-right { font-family: var(--mono); font-size: 10px; color: var(--hint); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-brand">
+    <div class="brand-icon" role="img" aria-label="icono de embudo">🔽</div>
+    <span class="brand-name">Simulador de Embudo Web</span>
+    <span class="brand-tag">análisis de conversión</span>
+  </div>
+  <div class="header-badge">Diseño de Sitios Web · Licenciatura</div>
+</header>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- PANEL IZQUIERDO: CONTROLES -->
+  <aside class="panel">
+
+    <!-- Sitio -->
+    <div class="card">
+      <div class="card-title">Sitio a analizar</div>
+      <div class="card-sub">Escribí el nombre o elegí uno del curso.</div>
+      <input class="site-input" type="text" id="site-name"
+        placeholder="Ej: mep.go.cr" value=""
+        oninput="update()">
+      <div class="quick-row">
+        <button class="quick-chip" onclick="setSite('mep.go.cr')">mep.go.cr</button>
+        <button class="quick-chip" onclick="setSite('tse.go.cr')">tse.go.cr</button>
+        <button class="quick-chip" onclick="setSite('ccss.sa.cr')">ccss.sa.cr</button>
+        <button class="quick-chip" onclick="setSite('ucr.ac.cr')">ucr.ac.cr</button>
+        <button class="quick-chip" onclick="setSite('tec.ac.cr')">tec.ac.cr</button>
+        <button class="quick-chip" onclick="setSite('msj.go.cr')">msj.go.cr</button>
+      </div>
+    </div>
+
+    <!-- Escenarios -->
+    <div class="card">
+      <div class="card-title">Escenarios predefinidos</div>
+      <div class="card-sub">Cargá un perfil típico o configurá manualmente.</div>
+      <div class="preset-grid">
+        <button class="preset-btn" id="pre-gov" onclick="setPreset('gov')">
+          <div class="preset-name">🏛 Gubernamental</div>
+          <div class="preset-desc">Tráfico alto, conversión baja</div>
+        </button>
+        <button class="preset-btn" id="pre-edu" onclick="setPreset('edu')">
+          <div class="preset-name">🎓 Educativo</div>
+          <div class="preset-desc">Perfil universitario típico</div>
+        </button>
+        <button class="preset-btn" id="pre-shop" onclick="setPreset('shop')">
+          <div class="preset-name">🛒 E-commerce</div>
+          <div class="preset-desc">Tienda en línea CR</div>
+        </button>
+        <button class="preset-btn active" id="pre-custom" onclick="setPreset('custom')">
+          <div class="preset-name">⚙ Personalizado</div>
+          <div class="preset-desc">Configuración libre</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Métricas -->
+    <div class="card">
+      <div class="card-title">Métricas del sitio</div>
+      <div class="card-sub">Ajustá los controles según los datos reales obtenidos.</div>
+      <div class="slider-group">
+
+        <div class="slider-item">
+          <div class="slider-header">
+            <span class="slider-label">Visitas al mes</span>
+            <span class="slider-value" id="v-visits">12,000</span>
+          </div>
+          <input type="range" id="s-visits" min="500" max="80000" value="12000" step="500" oninput="update()">
+          <div class="slider-ticks"><span>500</span><span>40k</span><span>80k</span></div>
+        </div>
+
+        <div class="slider-item">
+          <div class="slider-header">
+            <span class="slider-label">Tasa de rebote (%)</span>
+            <span class="slider-value" id="v-bounce">54%</span>
+          </div>
+          <input type="range" id="s-bounce" min="15" max="90" value="54" step="1" oninput="update()">
+          <div class="slider-ticks"><span>15%</span><span>52%</span><span>90%</span></div>
+        </div>
+
+        <div class="slider-item">
+          <div class="slider-header">
+            <span class="slider-label">Duración promedio (min)</span>
+            <span class="slider-value" id="v-dur">2.2 min</span>
+          </div>
+          <input type="range" id="s-dur" min="0.3" max="9" value="2.2" step="0.1" oninput="update()">
+          <div class="slider-ticks"><span>0.3</span><span>4.5</span><span>9 min</span></div>
+        </div>
+
+        <div class="slider-item">
+          <div class="slider-header">
+            <span class="slider-label">Tasa de conversión (%)</span>
+            <span class="slider-value" id="v-conv">2.8%</span>
+          </div>
+          <input type="range" id="s-conv" min="0.1" max="15" value="2.8" step="0.1" oninput="update()">
+          <div class="slider-ticks"><span>0.1%</span><span>7.5%</span><span>15%</span></div>
+        </div>
+
+        <div class="slider-item">
+          <div class="slider-header">
+            <span class="slider-label">% tráfico móvil</span>
+            <span class="slider-value" id="v-mobile">62%</span>
+          </div>
+          <input type="range" id="s-mobile" min="10" max="95" value="62" step="1" oninput="update()">
+          <div class="slider-ticks"><span>10%</span><span>52%</span><span>95%</span></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Contexto del formulario -->
+    <div class="card">
+      <div class="card-title">Formulario principal</div>
+      <div class="card-sub">Característica que más afecta la etapa de acción.</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--sub);cursor:pointer">
+          <input type="radio" name="form" value="simple" checked onchange="update()"> Formulario simple (1–3 campos)
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--sub);cursor:pointer">
+          <input type="radio" name="form" value="medium" onchange="update()"> Formulario mediano (4–6 campos)
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--sub);cursor:pointer">
+          <input type="radio" name="form" value="complex" onchange="update()"> Formulario complejo (7+ campos)
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--sub);cursor:pointer">
+          <input type="radio" name="form" value="none" onchange="update()"> Sin formulario (solo contenido)
+        </label>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- PANEL DERECHO: RESULTADOS -->
+  <div class="results">
+
+    <!-- KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi blue">
+        <div class="kpi-label">Visitas reales</div>
+        <div class="kpi-val" id="kv-real">5,520</div>
+        <div class="kpi-sub">excluye rebote</div>
+      </div>
+      <div class="kpi teal">
+        <div class="kpi-label">Conversiones</div>
+        <div class="kpi-val" id="kv-conv">336</div>
+        <div class="kpi-sub">este mes</div>
+      </div>
+      <div class="kpi amber">
+        <div class="kpi-label">Páginas/sesión</div>
+        <div class="kv-val" id="kv-pages" style="font-size:26px;font-weight:600;margin:4px 0 2px;letter-spacing:-.02em">3.1</div>
+        <div class="kpi-sub">estimado</div>
+      </div>
+      <div class="kpi red">
+        <div class="kpi-label">Visitas sin convertir</div>
+        <div class="kpi-val" id="kv-lost">11,664</div>
+        <div class="kpi-sub">oportunidad perdida</div>
+      </div>
+    </div>
+
+    <!-- FUNNEL -->
+    <div class="funnel-card">
+      <div class="funnel-header">
+        <div class="funnel-title">Embudo de conversión — <span id="site-label" style="color:var(--blue)">sitio evaluado</span></div>
+        <div class="funnel-device">
+          <button class="dev-chip active" id="chip-mob" onclick="setDev('mob')">📱 Móvil</button>
+          <button class="dev-chip" id="chip-desk" onclick="setDev('desk')">🖥 Escritorio</button>
+        </div>
+      </div>
+      <div class="funnel-steps" id="funnel-steps"></div>
+      <div class="insight" id="main-insight"></div>
+    </div>
+
+    <!-- HEURÍSTICAS -->
+    <div class="heuristic-card">
+      <div class="heuristic-title">Hallazgos con criterios de Nielsen</div>
+      <div class="heuristic-list" id="heuristic-list"></div>
+    </div>
+
+    <!-- PREGUNTAS -->
+    <div class="questions-card">
+      <div class="questions-title">Preguntas de reflexión para el grupo</div>
+      <div class="question-list" id="question-list"></div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="footer-left">Simulador de Embudo Web · Diseño de Sitios Web · Licenciatura · Uso académico</div>
+  <div class="footer-right">Los datos son simulaciones pedagógicas, no analytics reales</div>
+</footer>
+
+<script>
+let currentDev = 'mob';
+
+const PRESETS = {
+  gov:    { visits: 28000, bounce: 68, dur: 1.6, conv: 0.8, mobile: 55 },
+  edu:    { visits: 12000, bounce: 48, dur: 3.1, conv: 2.2, mobile: 58 },
+  shop:   { visits: 18000, bounce: 42, dur: 4.2, conv: 3.8, mobile: 72 },
+  custom: { visits: 12000, bounce: 54, dur: 2.2, conv: 2.8, mobile: 62 },
+};
+
+const STEP_DATA = [
+  { icon: '🏠', name: 'Visita la página', desc: 'Llegan desde buscadores, redes, directo' },
+  { icon: '👁', name: 'Explora el contenido', desc: 'Navega más de una pantalla' },
+  { icon: '🖱', name: 'Interacción clave', desc: 'Clic en elemento central, menú profundo' },
+  { icon: '📝', name: 'Formulario / acción', desc: 'Inicia el proceso de conversión' },
+  { icon: '✅', name: 'Conversión final', desc: 'Completa el objetivo del sitio' },
+];
+
+const COLORS = ['#2A5BD7','#6B3AC8','#0E8A73','#C47A0A','#C8312A'];
+
+function setSite(name) {
+  document.getElementById('site-name').value = name;
+  update();
+}
+
+function setDev(d) {
+  currentDev = d;
+  document.getElementById('chip-mob').classList.toggle('active', d === 'mob');
+  document.getElementById('chip-desk').classList.toggle('active', d === 'desk');
+  update();
+}
+
+function setPreset(key) {
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('pre-' + key).classList.add('active');
+  const p = PRESETS[key];
+  document.getElementById('s-visits').value = p.visits;
+  document.getElementById('s-bounce').value = p.bounce;
+  document.getElementById('s-dur').value = p.dur;
+  document.getElementById('s-conv').value = p.conv;
+  document.getElementById('s-mobile').value = p.mobile;
+  update();
+}
+
+function getForm() {
+  return document.querySelector('input[name="form"]:checked')?.value || 'simple';
+}
+
+function calcFunnel(visits, bounce, conv, formType, dev) {
+  const base = 100;
+  const mobilePenalty = dev === 'mob' ? 0.93 : 1.0;
+  const formPenalty = { simple: 1.0, medium: 0.82, complex: 0.65, none: 1.1 }[formType] || 1.0;
+  const rb = bounce / 100;
+
+  const s1 = base;
+  const s2 = Math.round(base * (1 - rb * 0.6) * mobilePenalty);
+  const s3 = Math.round(s2 * (bounce > 65 ? 0.58 : bounce > 45 ? 0.68 : 0.76) * mobilePenalty);
+  const s4 = Math.round(s3 * formPenalty * (bounce > 65 ? 0.52 : 0.64));
+  const s5 = Math.round(conv * 3.8);
+
+  return [s1, Math.max(s5+20, s2), Math.max(s5+12, s3), Math.max(s5+4, s4), Math.max(1, s5)];
+}
+
+function dropClass(drop) {
+  if (drop === 0) return 'drop-none';
+  if (drop > 42) return 'drop-bad';
+  if (drop > 22) return 'drop-ok';
+  return 'drop-good';
+}
+
+function buildFunnel(pctsArr, totalVisits) {
+  const el = document.getElementById('funnel-steps');
+  let worst = { idx: -1, drop: 0 };
+  for (let i = 1; i < pctsArr.length; i++) {
+    const drop = Math.round(((pctsArr[i-1] - pctsArr[i]) / pctsArr[i-1]) * 100);
+    if (drop > worst.drop) { worst.drop = drop; worst.idx = i; }
+  }
+
+  el.innerHTML = pctsArr.map((pct, i) => {
+    const users = Math.round(totalVisits * pct / 100);
+    const prev = i === 0 ? 100 : pctsArr[i-1];
+    const drop = i === 0 ? 0 : Math.round(((prev - pct) / prev) * 100);
+    const isWorst = i === worst.idx;
+
+    return `<div class="funnel-step${isWorst ? ' worst' : ''}">
+      <div class="step-icon" style="background:${COLORS[i]}18;color:${COLORS[i]}">${STEP_DATA[i].icon}</div>
+      <div class="step-info">
+        <div class="step-name">${STEP_DATA[i].name}${isWorst ? ' ⚠' : ''}</div>
+        <div class="step-desc">${STEP_DATA[i].desc}</div>
+      </div>
+      <div class="step-bar-wrap">
+        <div class="step-bar" style="width:${pct}%;background:${COLORS[i]}"></div>
+      </div>
+      <div class="step-pct">${pct}%</div>
+      <div class="step-users">${users.toLocaleString('es-CR')}</div>
+      ${i > 0
+        ? `<div class="drop-badge ${dropClass(drop)}">${drop > 0 ? '-' + drop + '%' : '—'}</div>`
+        : `<div class="drop-badge drop-none">base</div>`}
+    </div>
+    ${i < pctsArr.length - 1 ? `<div class="connector"><div class="conn-line"></div></div>` : ''}`;
+  }).join('');
+}
+
+function buildInsight(bounce, conv, formType, siteName, dev) {
+  const el = document.getElementById('main-insight');
+  const devStr = dev === 'mob' ? 'móvil' : 'escritorio';
+  const formLabels = { simple: 'simple', medium: 'mediano', complex: 'complejo (7+ campos)', none: 'sin formulario' };
+  const fl = formLabels[formType];
+  let cls, html;
+
+  if (bounce > 68) {
+    cls = 'red';
+    html = `<strong>Tasa de rebote crítica (${bounce}% en ${devStr}):</strong> la mayoría de usuarios abandona sin explorar. Problema probable: velocidad de carga lenta, mensaje del hero poco claro o expectativa no cumplida. Heurística clave: <strong>H1</strong> (visibilidad del estado) y <strong>H8</strong> (minimalismo).`;
+  } else if (conv < 1.2) {
+    cls = 'amber';
+    html = `<strong>Tasa de conversión muy baja (${conv.toFixed(1)}%):</strong> el sitio atrae usuarios pero no logra el objetivo. Con un formulario ${fl}, revisá <strong>H5</strong> (prevención de errores) y <strong>H9</strong> (manejo de errores) — son los problemas más frecuentes en la etapa de acción.`;
+  } else if (formType === 'complex' && conv < 4) {
+    cls = 'amber';
+    html = `<strong>Formulario complejo detectado:</strong> con 7+ campos y una conversión de ${conv.toFixed(1)}%, hay alta probabilidad de abandono en el paso de acción. Propuesta A/B: reducir campos opcionales o implementar formulario progresivo. Heurística: <strong>H8</strong> y <strong>H3</strong>.`;
+  } else if (bounce < 35 && conv > 5) {
+    cls = 'green';
+    html = `<strong>Métricas saludables:</strong> rebote controlado y conversión razonable para ${siteName || 'el sitio'}. Próximo paso: optimizar el paso de interacción clave para empujar más usuarios hacia la acción final sin aumentar el presupuesto de tráfico.`;
+  } else {
+    cls = 'blue';
+    html = `<strong>Métricas mixtas:</strong> hay oportunidad clara en el embudo medio. Usá Microsoft Clarity para ver con heatmaps dónde exactamente abandona el usuario antes de llegar al formulario. La caída marcada con ⚠ es el punto de intervención prioritario.`;
+  }
+
+  el.className = 'insight ' + cls;
+  el.innerHTML = html;
+}
+
+function buildHeuristics(bounce, conv, formType, dev) {
+  const findings = [];
+  const devStr = dev === 'mob' ? 'móvil' : 'escritorio';
+
+  if (bounce > 55) findings.push({
+    h: 'H1', name: 'Visibilidad del estado del sistema',
+    desc: `Rebote de ${bounce}% en ${devStr} sugiere que el usuario no recibe retroalimentación rápida al cargar. Verificar LCP y mensajes de carga.`,
+    sev: bounce > 70 ? 4 : 3, color: bounce > 70 ? 'var(--red)' : 'var(--amber)'
+  });
+
+  if (formType === 'complex') findings.push({
+    h: 'H8', name: 'Diseño estético y minimalista',
+    desc: `Un formulario de 7+ campos añade carga cognitiva innecesaria. Evaluar cuáles campos son estrictamente necesarios para la primera interacción.`,
+    sev: 3, color: 'var(--amber)'
+  });
+
+  if (conv < 2 && formType !== 'none') findings.push({
+    h: 'H5', name: 'Prevención de errores',
+    desc: `Conversión de ${conv.toFixed(1)}% con formulario presente sugiere problemas en validación o campos confusos. Verificar campos obligatorios, formatos esperados y ayuda contextual.`,
+    sev: conv < 1 ? 4 : 3, color: conv < 1 ? 'var(--red)' : 'var(--amber)'
+  });
+
+  if (dev === 'mob' && bounce > 50) findings.push({
+    h: 'H7', name: 'Flexibilidad y eficiencia de uso',
+    desc: `Con ${document.getElementById('s-mobile').value}% de tráfico móvil y rebote de ${bounce}%, la experiencia en pantallas pequeñas puede estar bloqueando tareas frecuentes.`,
+    sev: 3, color: 'var(--amber)'
+  });
+
+  if (conv < 1.5 && formType !== 'none') findings.push({
+    h: 'H9', name: 'Ayuda a reconocer y recuperarse de errores',
+    desc: `Tasa de conversión baja en un sitio con formulario suele correlacionar con mensajes de error genéricos o que no conservan los datos ingresados al fallar.`,
+    sev: 2, color: 'var(--blue)'
+  });
+
+  if (bounce > 60 && bounce <= 72) findings.push({
+    h: 'H3', name: 'Control y libertad del usuario',
+    desc: `Rebote elevado puede indicar que el usuario no encuentra una salida clara si llegó a la página equivocada. Verificar migas de pan y acceso al menú principal.`,
+    sev: 2, color: 'var(--blue)'
+  });
+
+  const el = document.getElementById('heuristic-list');
+  if (findings.length === 0) {
+    el.innerHTML = `<div style="font-size:13px;color:var(--muted);padding:8px 0">No se detectaron problemas heurísticos automáticos con estas métricas. Complementá con evaluación manual del sitio.</div>`;
+    return;
+  }
+  const sevLabel = { 4: 'SEV 4', 3: 'SEV 3', 2: 'SEV 2', 1: 'SEV 1' };
+  const sevBg = { 4: 'var(--red-l)', 3: 'var(--amber-l)', 2: 'var(--blue-l)', 1: 'var(--green-l)' };
+  const sevColor = { 4: 'var(--red)', 3: 'var(--amber)', 2: 'var(--blue)', 1: 'var(--green)' };
+  const dotColor = { 4: 'var(--red)', 3: 'var(--amber)', 2: 'var(--blue)', 1: 'var(--green)' };
+  el.innerHTML = findings.map(f => `
+    <div class="heuristic-item">
+      <div class="sev-dot" style="background:${dotColor[f.sev]}"></div>
+      <div class="h-body">
+        <div class="h-name">${f.h} — ${f.name}</div>
+        <div class="h-desc">${f.desc}</div>
+      </div>
+      <div class="h-tag" style="background:${sevBg[f.sev]};color:${sevColor[f.sev]};border:1px solid ${f.color}22">${sevLabel[f.sev]}</div>
+    </div>`).join('');
+}
+
+function buildQuestions(bounce, conv, formType, visits, siteName, dev) {
+  const site = siteName || 'el sitio evaluado';
+  const devStr = dev === 'mob' ? 'móvil' : 'escritorio';
+  const realVisits = Math.round(visits * (1 - bounce / 100));
+  const convN = Math.round(visits * conv / 100);
+
+  const qs = [
+    `El embudo muestra que de <strong>${visits.toLocaleString('es-CR')}</strong> visitas al mes, solo <strong>${realVisits.toLocaleString('es-CR')}</strong> exploran el contenido. ¿En qué paso del embudo encontrás la mayor caída? ¿Qué heurística de Nielsen se relaciona directamente con ese abandono?`,
+    `Con ${conv.toFixed(1)}% de conversión, el sitio genera <strong>${convN.toLocaleString('es-CR')} conversiones/mes</strong>. Si aumentaras la conversión un 1%, ¿cuántas conversiones adicionales obtendría el sitio? ¿Qué cambio de diseño específico propondrías para lograrlo?`,
+    `El análisis está en modo <strong>${devStr}</strong> con ${document.getElementById('s-mobile').value}% de tráfico móvil. ¿Cómo cambiaría el embudo si el sitio tuviera problemas de responsividad? ¿Cuál paso se vería más afectado?`,
+    `Diseñá la hipótesis del experimento A/B para el paso con mayor abandono: <em>"Si cambiamos [X] por [Y] en [paso], esperamos que [métrica Z] mejore porque [principio de Nielsen o comportamiento del usuario]."</em>`,
+    `¿Qué información adicional necesitarías (que este simulador no puede darte) para tomar una decisión de diseño con mayor confianza? ¿Qué herramienta la proporcionaría: Microsoft Clarity, encuestas, pruebas de usabilidad, Google Analytics?`,
+  ];
+
+  document.getElementById('question-list').innerHTML = qs.map((q, i) => `
+    <div class="q-item">
+      <div class="q-num">${i + 1}</div>
+      <div class="q-text">${q}</div>
+    </div>`).join('');
+}
+
+function update() {
+  const visits  = parseInt(document.getElementById('s-visits').value);
+  const bounce  = parseInt(document.getElementById('s-bounce').value);
+  const dur     = parseFloat(document.getElementById('s-dur').value);
+  const conv    = parseFloat(document.getElementById('s-conv').value);
+  const mobile  = parseInt(document.getElementById('s-mobile').value);
+  const siteName = document.getElementById('site-name').value.trim() || 'sitio evaluado';
+  const formType = getForm();
+  const dev = currentDev;
+
+  // Labels
+  document.getElementById('v-visits').textContent = visits.toLocaleString('es-CR');
+  document.getElementById('v-bounce').textContent = bounce + '%';
+  document.getElementById('v-dur').textContent = dur.toFixed(1) + ' min';
+  document.getElementById('v-conv').textContent = conv.toFixed(1) + '%';
+  document.getElementById('v-mobile').textContent = mobile + '%';
+
+  // Site label
+  document.getElementById('site-label').textContent = siteName;
+
+  // KPIs
+  const realVisits = Math.round(visits * (1 - bounce / 100));
+  const conversions = Math.round(visits * conv / 100);
+  const pages = Math.round((dur / 1.5 + 1) * 10) / 10;
+  const lost = visits - conversions;
+
+  document.getElementById('kv-real').textContent = realVisits.toLocaleString('es-CR');
+  document.getElementById('kv-conv').textContent = conversions.toLocaleString('es-CR');
+  document.getElementById('kv-pages').textContent = pages.toFixed(1);
+  document.getElementById('kv-lost').textContent = lost.toLocaleString('es-CR');
+
+  // Funnel
+  const pcts = calcFunnel(visits, bounce, conv, formType, dev);
+  buildFunnel(pcts, visits);
+  buildInsight(bounce, conv, formType, siteName, dev);
+  buildHeuristics(bounce, conv, formType, dev);
+  buildQuestions(bounce, conv, formType, visits, siteName, dev);
+}
+
+update();
+</script>
+
+</body>
+</html>
